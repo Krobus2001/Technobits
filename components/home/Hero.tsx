@@ -1,9 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import Background from "../effects/Background";
 import Image from "next/image";
+
+import Background from "../effects/Background";
+import Button from "../ui/Button";
 
 export default function Hero() {
   return (
@@ -14,6 +15,8 @@ export default function Hero() {
       <div className="absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-blue-500/10 blur-[180px]" />
 
       <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl grid-cols-1 items-center gap-16 px-6 pt-24 lg:grid-cols-2">
+
+        {/* LEFT */}
 
         <motion.div
           initial={{ opacity: 0, x: -40 }}
@@ -28,7 +31,7 @@ export default function Hero() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: .2 }}
+            transition={{ delay: 0.2 }}
             className="mb-6 font-semibold uppercase tracking-[0.35em] text-blue-400"
           >
             Empowering Students Through Technology
@@ -37,7 +40,7 @@ export default function Hero() {
           <motion.h1
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: .8 }}
+            transition={{ duration: 0.8 }}
             className="text-5xl font-black leading-tight text-white md:text-6xl lg:text-7xl"
           >
             Learn.
@@ -52,45 +55,38 @@ export default function Hero() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: .4 }}
+            transition={{ delay: 0.4 }}
             className="mt-8 max-w-xl text-lg leading-8 text-slate-300"
           >
             TECHNOBITS is a community of passionate students who love
-            programming, networking, multimedia, and emerging
-            technologies. Together, we learn, collaborate, and build solutions
-            that make a difference.
+            programming, networking, multimedia, and emerging technologies.
+            Together, we learn, collaborate, and build solutions that make a
+            difference.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: .6 }}
+            transition={{ delay: 0.6 }}
             className="mt-10 flex flex-wrap gap-4"
           >
-
-            <button className="group flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 px-7 py-4 font-semibold text-white shadow-lg shadow-blue-500/30 transition duration-300 hover:scale-105">
-
+            <Button>
               Join Community
+            </Button>
 
-              <ArrowRight
-                size={18}
-                className="transition group-hover:translate-x-1"
-              />
-
-            </button>
-
-            <button className="rounded-xl border border-white/20 bg-white/5 px-7 py-4 text-white backdrop-blur-md transition hover:border-blue-400 hover:bg-white/10">
-              Explore Tutorials
-            </button>
-
+            <Button variant="secondary">
+              Learn More
+            </Button>
           </motion.div>
 
         </motion.div>
 
+        {/* RIGHT */}
+
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: .8 }}
+          transition={{ duration: 0.8 }}
           className="flex justify-center"
         >
 
@@ -108,24 +104,18 @@ export default function Hero() {
 
             <div className="absolute inset-0 rounded-full bg-blue-500 opacity-30 blur-[120px]" />
 
-
             <div className="absolute -inset-5 rounded-full border border-blue-400/20" />
-
 
             <div className="relative flex h-[420px] w-[420px] items-center justify-center rounded-full border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
 
-              <div className="text-center">
-
-                <Image
-                  src="/logo/technobitslogo.png"
-                  alt="TECHNOBITS Logo"
-                  width={420}
-                  height={420}
-                  priority
-                  className="mx-auto drop-shadow-[0_0_45px_rgba(59,130,246,0.8)]"
-                />
-
-              </div>
+              <Image
+                src="/technobitslogo.png"
+                alt="TECHNOBITS Logo"
+                width={320}
+                height={320}
+                priority
+                className="drop-shadow-[0_0_45px_rgba(59,130,246,0.8)]"
+              />
 
             </div>
 
