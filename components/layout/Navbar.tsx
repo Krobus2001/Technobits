@@ -4,8 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-
-import UserMenu from "../auth/UserMenu";
+import Button from "../ui/Button";
 
 const links = [
   { name: "Home", href: "/" },
@@ -38,11 +37,9 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-
         {/* Logo */}
 
         <Link href="/" className="flex items-center gap-4">
-
           <Image
             src="/technobitslogo.png"
             alt="TECHNOBITS"
@@ -60,13 +57,11 @@ export default function Navbar() {
               Empowering Students Through Technology
             </p>
           </div>
-
         </Link>
 
         {/* Desktop Navigation */}
 
         <nav className="hidden items-center gap-8 lg:flex">
-
           {links.map((link) => (
             <Link
               key={link.name}
@@ -76,13 +71,14 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-
         </nav>
 
-        {/* Desktop User */}
+        {/* Desktop Login */}
 
         <div className="hidden lg:block">
-          <UserMenu />
+          <Link href="/login">
+            <Button>Login</Button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -90,19 +86,17 @@ export default function Navbar() {
         <button
           onClick={() => setOpen(!open)}
           className="text-white lg:hidden"
+          aria-label="Toggle menu"
         >
           {open ? <X size={30} /> : <Menu size={30} />}
         </button>
-
       </div>
 
       {/* Mobile Menu */}
 
       {open && (
         <div className="border-t border-white/10 bg-[#07182F]/95 backdrop-blur-xl lg:hidden">
-
           <div className="flex flex-col gap-2 p-6">
-
             {links.map((link) => (
               <Link
                 key={link.name}
@@ -115,14 +109,18 @@ export default function Navbar() {
             ))}
 
             <div className="mt-4">
-              <UserMenu />
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+              >
+                <Button className="w-full justify-center">
+                  Login
+                </Button>
+              </Link>
             </div>
-
           </div>
-
         </div>
       )}
-
     </header>
   );
 }

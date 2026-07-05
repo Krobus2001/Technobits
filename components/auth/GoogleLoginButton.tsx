@@ -8,13 +8,16 @@ export default function GoogleLoginButton() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: "http://localhost:3000/auth/callback",
       },
     });
   }
 
   return (
-    <Button onClick={login}>
+    <Button
+      onClick={login}
+      className="w-full justify-center"
+    >
       Sign in with Google
     </Button>
   );
