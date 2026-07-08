@@ -48,16 +48,27 @@ export default async function AdminLayout({
             👥 Members
           </Link>
 
-          <Link href="/admin/posts" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
-            📰 Posts
+          <Link href="/admin/tutorials" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
+            📚 Tutorials
           </Link>
 
           <Link href="/admin/events" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
             📅 Events
           </Link>
 
+          <Link href="/admin/questions" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
+            ❓Ask
+          </Link>
+
           <Link href="/admin/services" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
             💻 Services
+          </Link>
+
+          <Link
+            href="/admin/services/schedule"
+            className="rounded-lg p-3 text-slate-300 hover:bg-white/10"
+          >
+            🕒 Service Schedule
           </Link>
 
           <Link href="/admin/officers" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
