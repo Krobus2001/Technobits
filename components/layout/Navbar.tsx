@@ -5,18 +5,20 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import Button from "../ui/Button";
+import { supabase } from "@/lib/Supabase";
 
 const links = [
-  { name: "Home", href: "/" },
   { name: "Tutorials", href: "/tutorials" },
   { name: "Discussions", href: "/ask" },
   { name: "Events", href: "/events" },
   { name: "Services", href: "/services" },
+  { name: "Officers", href: "/officers" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +27,33 @@ export default function Navbar() {
 
     window.addEventListener("scroll", handleScroll);
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () =>
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
+  }, []);
+
+  useEffect(() => {
+    async function checkUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      setLoggedIn(!!user);
+    }
+
+    checkUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setLoggedIn(!!session?.user);
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
   return (
@@ -37,9 +65,13 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+
         {/* Logo */}
 
-        <Link href="/" className="flex items-center gap-4">
+        <Link
+          href="/"
+          className="flex items-center gap-4"
+        >
           <Image
             src="/technobitslogo.png"
             alt="TECHNOBITS"
@@ -73,11 +105,15 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Desktop Login */}
+        {/* Desktop Button */}
 
         <div className="hidden lg:block">
-          <Link href="/login">
-            <Button>Login</Button>
+          <Link
+            href={loggedIn ? "/dashboard" : "/login"}
+          >
+            <Button>
+              {loggedIn ? "Dashboard" : "Login"}
+            </Button>
           </Link>
         </div>
 
@@ -90,6 +126,7 @@ export default function Navbar() {
         >
           {open ? <X size={30} /> : <Menu size={30} />}
         </button>
+
       </div>
 
       {/* Mobile Menu */}
@@ -97,6 +134,7 @@ export default function Navbar() {
       {open && (
         <div className="border-t border-white/10 bg-[#07182F]/95 backdrop-blur-xl lg:hidden">
           <div className="flex flex-col gap-2 p-6">
+
             {links.map((link) => (
               <Link
                 key={link.name}
@@ -110,14 +148,15 @@ export default function Navbar() {
 
             <div className="mt-4">
               <Link
-                href="/login"
+                href={loggedIn ? "/dashboard" : "/login"}
                 onClick={() => setOpen(false)}
               >
                 <Button className="w-full justify-center">
-                  Login
+                  {loggedIn ? "Dashboard" : "Login"}
                 </Button>
               </Link>
             </div>
+
           </div>
         </div>
       )}

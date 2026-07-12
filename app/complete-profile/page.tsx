@@ -22,10 +22,13 @@ export default async function CompleteProfilePage() {
         </h1>
 
         <p className="mt-3 text-slate-300">
-          Before continuing, please confirm your full name.
+          Please confirm your full name before using TECHNOBITS.
         </p>
 
-        <form action={completeProfile} className="mt-8">
+        <form
+          action={completeProfile}
+          className="mt-8"
+        >
 
           <label className="mb-2 block text-sm text-slate-300">
             Full Name
@@ -34,15 +37,16 @@ export default async function CompleteProfilePage() {
           <input
             type="text"
             name="full_name"
+            required
             defaultValue={user.user_metadata.full_name ?? ""}
             className="w-full rounded-lg border border-white/10 bg-white/10 px-4 py-3 text-white outline-none focus:border-cyan-400"
           />
 
           <button
             type="submit"
-            className="mt-6 w-full rounded-lg bg-cyan-500 py-3 font-semibold text-white transition hover:bg-cyan-600"
+            className="mt-6 w-full rounded-lg bg-cyan-500 py-3 font-semibold text-black transition hover:bg-cyan-400"
           >
-            Continue
+            Save Profile
           </button>
 
         </form>

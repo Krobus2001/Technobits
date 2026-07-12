@@ -64,10 +64,13 @@ export default async function EventsPage() {
             className="group overflow-hidden rounded-2xl border border-white/10 bg-[#07182F] transition hover:-translate-y-2 hover:border-cyan-400"
           >
 
-            <img
-              src={event.poster_url}
-              className="h-60 w-full object-cover transition duration-500 group-hover:scale-105"
-            />
+            <div className="flex h-80 items-center justify-center overflow-hidden bg-[#051120]">
+              <img
+                src={event.poster_url}
+                alt={event.title}
+                className="max-h-full max-w-full object-contain transition duration-500 group-hover:scale-105"
+              />
+            </div>
 
             <div className="p-6">
 

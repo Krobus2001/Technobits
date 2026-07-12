@@ -23,9 +23,15 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  if (!profile || profile.website_role_id !== 1) {
+  // Only Super Admin (1) and Content Admin (2)
+  if (
+    !profile ||
+    ![1, 2].includes(profile.website_role_id)
+  ) {
     redirect("/dashboard");
   }
+
+  const isSuperAdmin = profile.website_role_id === 1;
 
   return (
     <div className="flex min-h-screen bg-[#07182F]">
@@ -40,43 +46,55 @@ export default async function AdminLayout({
 
         <nav className="flex flex-col gap-2">
 
-          <Link href="/admin" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
+          <Link
+            href="/admin"
+            className="rounded-lg p-3 text-slate-300 hover:bg-white/10"
+          >
             📊 Dashboard
           </Link>
 
-          <Link href="/admin/members" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
-            👥 Members
-          </Link>
+          {isSuperAdmin && (
+            <Link
+              href="/admin/members"
+              className="rounded-lg p-3 text-slate-300 hover:bg-white/10"
+            >
+              👥 Members
+            </Link>
+          )}
 
-          <Link href="/admin/tutorials" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
+          <Link
+            href="/admin/tutorials"
+            className="rounded-lg p-3 text-slate-300 hover:bg-white/10"
+          >
             📚 Tutorials
           </Link>
 
-          <Link href="/admin/events" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
+          <Link
+            href="/admin/events"
+            className="rounded-lg p-3 text-slate-300 hover:bg-white/10"
+          >
             📅 Events
           </Link>
 
-          <Link href="/admin/questions" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
-            ❓Ask
+          <Link
+            href="/admin/questions"
+            className="rounded-lg p-3 text-slate-300 hover:bg-white/10"
+          >
+            ❓ Ask
           </Link>
 
-          <Link href="/admin/services" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
+          <Link
+            href="/admin/services"
+            className="rounded-lg p-3 text-slate-300 hover:bg-white/10"
+          >
             💻 Services
           </Link>
 
           <Link
-            href="/admin/services/schedule"
+            href="/admin/officers"
             className="rounded-lg p-3 text-slate-300 hover:bg-white/10"
           >
-            🕒 Service Schedule
-          </Link>
-
-          <Link href="/admin/officers" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
             🏆 Officers
-          </Link>
-
-          <Link href="/admin/settings" className="rounded-lg p-3 text-slate-300 hover:bg-white/10">
-            ⚙ Settings
           </Link>
 
         </nav>
@@ -90,7 +108,9 @@ export default async function AdminLayout({
         <header className="flex h-20 items-center justify-between border-b border-white/10 px-8">
 
           <h2 className="text-2xl font-bold text-white">
-            Admin Panel
+            {isSuperAdmin
+              ? "Super Admin Panel"
+              : "Content Admin Panel"}
           </h2>
 
           <p className="text-slate-300">

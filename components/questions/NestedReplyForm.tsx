@@ -7,11 +7,13 @@ import { useReplies } from "./RepliesProvider";
 type Props = {
   questionId: string;
   parentReplyId: string;
+  canReply: boolean;
 };
 
 export default function NestedReplyForm({
   questionId,
   parentReplyId,
+  canReply,
 }: Props) {
   const { addReply } = useReplies();
 
@@ -39,13 +41,14 @@ export default function NestedReplyForm({
         }
       );
 
+      const data = await res.json();
+
       if (!res.ok) {
-        throw new Error("Failed to post reply.");
+        alert(data.error ?? "Failed to post reply.");
+        return;
       }
 
-      const newReply = await res.json();
-
-      addReply(newReply);
+      addReply(data);
 
       setContent("");
       setOpen(false);
@@ -61,8 +64,17 @@ export default function NestedReplyForm({
     return (
       <button
         type="button"
-        onClick={() => setOpen(true)}
-        className="mt-4 text-sm font-semibold text-cyan-400 hover:text-cyan-300"
+        disabled={!canReply}
+        onClick={() => {
+          if (canReply) {
+            setOpen(true);
+          }
+        }}
+        className={`mt-4 text-sm font-semibold transition ${
+          canReply
+            ? "text-cyan-400 hover:text-cyan-300"
+            : "cursor-not-allowed text-slate-500"
+        }`}
       >
         💬 Reply
       </button>
@@ -80,19 +92,21 @@ export default function NestedReplyForm({
 
       <div className="mt-4 flex gap-3">
         <button
+          type="button"
           onClick={submitReply}
           disabled={loading}
-          className="rounded-lg bg-cyan-500 px-5 py-2 font-bold text-black disabled:opacity-50"
+          className="rounded-lg bg-cyan-500 px-5 py-2 font-bold text-black transition hover:bg-cyan-400 disabled:opacity-50"
         >
           {loading ? "Posting..." : "Reply"}
         </button>
 
         <button
+          type="button"
           onClick={() => {
             setOpen(false);
             setContent("");
           }}
-          className="rounded-lg border border-white/10 px-5 py-2 text-white"
+          className="rounded-lg border border-white/10 px-5 py-2 text-white hover:bg-white/10"
         >
           Cancel
         </button>

@@ -28,7 +28,7 @@ export async function completeProfile(formData: FormData) {
 
     // Default values
     website_role_id: 3,
-    club_position_id: 12,
+    club_position_id: null,
     account_status: "Active",
   });
 

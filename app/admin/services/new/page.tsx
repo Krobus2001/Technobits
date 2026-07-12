@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import slugify from "slugify";
+import ServicesNavigation from "@/components/admin/services/ServicesNavigation";
 
 async function createService(formData: FormData) {
   "use server";
@@ -42,6 +43,8 @@ export default function NewServicePage() {
       <h1 className="mb-10 text-4xl font-black text-white">
         Add Service
       </h1>
+
+      <ServicesNavigation current="new" />
 
       <form
         action={createService}

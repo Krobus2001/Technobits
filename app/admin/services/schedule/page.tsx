@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase-server";
 import { updateSchedule } from "./actions";
+import ServicesNavigation from "@/components/admin/services/ServicesNavigation";
 
 export default async function SchedulePage() {
   const supabase = await createClient();
@@ -28,6 +29,8 @@ export default async function SchedulePage() {
       <h1 className="mb-10 text-4xl font-black text-white">
         Service Schedule
       </h1>
+
+      <ServicesNavigation current="schedule" />
 
       <div className="space-y-5">
 

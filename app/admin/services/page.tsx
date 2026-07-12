@@ -1,5 +1,6 @@
-import { createClient } from "@/lib/supabase-server";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase-server";
+import ServicesNavigation from "@/components/admin/services/ServicesNavigation";
 import { deleteService } from "./actions";
 
 export default async function AdminServicesPage() {
@@ -8,29 +9,25 @@ export default async function AdminServicesPage() {
   const { data: services } = await supabase
     .from("services")
     .select("*")
-    .order("created_at", {
-      ascending: false,
-    });
+    .order("title");
 
   return (
     <div>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-black text-white">
+            Services
+          </h1>
 
-      <div className="mb-10 flex items-center justify-between">
-
-        <h1 className="text-4xl font-black text-white">
-          Services
-        </h1>
-
-        <Link
-          href="/admin/services/new"
-          className="rounded-xl bg-cyan-500 px-6 py-3 font-bold text-black"
-        >
-          + Add Service
-        </Link>
-
+          <p className="mt-2 text-slate-400">
+            Manage TECHNOBITS services.
+          </p>
+        </div>
       </div>
 
-      <div className="space-y-5">
+      <ServicesNavigation current="services" />
+
+      <div className="mt-10 grid gap-6">
 
         {services?.map((service) => (
 
@@ -47,50 +44,45 @@ export default async function AdminServicesPage() {
                   {service.title}
                 </h2>
 
-                <p className="mt-2 text-slate-400">
+                <p className="mt-2 max-w-3xl text-slate-400">
                   {service.description}
                 </p>
 
-                <div className="mt-4 flex gap-6 text-cyan-400">
+              </div>
 
-                  <span>
-                    ₱{service.price}
-                  </span>
+              <div className="text-right">
 
-                  <span>
-                    {service.estimated_duration} mins
-                  </span>
+                <p className="font-bold text-cyan-400">
+                  ₱{service.price}
+                </p>
 
-                  <span>
-                    {service.active
-                      ? "Active"
-                      : "Inactive"}
-                  </span>
+                <p className="text-slate-500">
+                  {service.estimated_duration} mins
+                </p>
+
+                <div className="mt-5 flex justify-end gap-3">
+
+                  <Link
+                    href={`/admin/services/${service.id}`}
+                    className="rounded-lg border border-cyan-500 px-4 py-2 font-semibold text-cyan-400 transition hover:bg-cyan-500/10"
+                  >
+                    Edit
+                  </Link>
+
+                  <form
+                    action={deleteService.bind(null, service.id)}
+                  >
+                    <button
+                      type="submit"
+                      className="rounded-lg bg-red-500 px-4 py-2 font-semibold text-white transition hover:bg-red-400"
+                    >
+                      Delete
+                    </button>
+                  </form>
 
                 </div>
 
               </div>
-
-              <div className="flex gap-3">
-
-                <Link
-                    href={`/admin/services/${service.id}`}
-                    className="rounded-lg border border-cyan-500 px-5 py-2 text-cyan-400"
-                >
-                    Edit
-                </Link>
-
-                <form
-                    action={deleteService.bind(null, service.id)}
-                >
-                    <button
-                    className="rounded-lg border border-red-500 px-5 py-2 text-red-400 hover:bg-red-500/10"
-                    >
-                    Delete
-                    </button>
-                </form>
-
-                </div>
 
             </div>
 

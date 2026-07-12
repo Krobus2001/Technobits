@@ -28,6 +28,77 @@ export async function POST(
     );
   }
 
+  // ------------------------------------
+  // Check account status
+  // ------------------------------------
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select(`
+      account_status,
+      muted_until,
+      moderation_reason
+    `)
+    .eq("id", user.id)
+    .single();
+
+  if (profile?.account_status === "Muted") {
+
+    // Temporary mute
+    if (profile.muted_until) {
+
+      const muteExpired =
+        new Date(profile.muted_until) <= new Date();
+
+      if (muteExpired) {
+
+        await supabase
+          .from("profiles")
+          .update({
+            account_status: "Active",
+            muted_until: null,
+            moderation_reason: null,
+          })
+          .eq("id", user.id);
+
+      } else {
+
+        return NextResponse.json(
+          {
+            error:
+              profile.moderation_reason ??
+              "Your account is currently muted.",
+          },
+          {
+            status: 403,
+          }
+        );
+
+      }
+
+    } else {
+
+      // Permanent mute
+
+      return NextResponse.json(
+        {
+          error:
+            profile.moderation_reason ??
+            "Your account is currently muted.",
+        },
+        {
+          status: 403,
+        }
+      );
+
+    }
+
+  }
+
+  // ------------------------------------
+  // Create Reply
+  // ------------------------------------
+
   const body = await request.json();
 
   const { data, error } = await supabase

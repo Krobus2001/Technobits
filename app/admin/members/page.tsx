@@ -1,8 +1,29 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase-server";
 
 export default async function MembersPage() {
   const supabase = await createClient();
+
+  // Check logged in user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Only Super Admin can access this page
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("website_role_id")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile || profile.website_role_id !== 1) {
+    redirect("/admin");
+  }
 
   // Get all members
   const { data: members, error } = await supabase
@@ -26,27 +47,13 @@ export default async function MembersPage() {
     .from("club_positions")
     .select("*");
 
-  console.log("======================================");
-  console.log("Members");
-  console.log(members);
-
-  console.log("Website Roles");
-  console.log(websiteRoles);
-
-  console.log("Website Roles Error");
-  console.log(websiteRolesError);
-
-  console.log("Club Positions");
-  console.log(clubPositions);
-
-  console.log("Club Positions Error");
-  console.log(clubPositionsError);
-  console.log("======================================");
-
   if (error) {
     return (
       <div className="p-10 text-red-400">
-        <h1 className="mb-4 text-3xl font-bold">Database Error</h1>
+        <h1 className="mb-4 text-3xl font-bold">
+          Database Error
+        </h1>
+
         <pre>{JSON.stringify(error, null, 2)}</pre>
       </div>
     );
@@ -59,12 +66,10 @@ export default async function MembersPage() {
         (role) => role.id === member.website_role_id
       ),
       clubPosition: clubPositions?.find(
-        (position) => position.id === member.club_position_id
+        (position) =>
+          position.id === member.club_position_id
       ),
     })) ?? [];
-
-  console.log("Members With Relations");
-  console.log(JSON.stringify(membersWithRelations, null, 2));
 
   return (
     <div>
@@ -88,12 +93,24 @@ export default async function MembersPage() {
         <table className="w-full">
           <thead className="bg-white/5">
             <tr className="border-b border-white/10">
-              <th className="p-5 text-left text-white">Avatar</th>
-              <th className="text-left text-white">Name</th>
-              <th className="text-left text-white">Club Position</th>
-              <th className="text-left text-white">Website Role</th>
-              <th className="text-left text-white">Status</th>
-              <th className="text-left text-white">Actions</th>
+              <th className="p-5 text-left text-white">
+                Avatar
+              </th>
+              <th className="text-left text-white">
+                Name
+              </th>
+              <th className="text-left text-white">
+                Club Position
+              </th>
+              <th className="text-left text-white">
+                Website Role
+              </th>
+              <th className="text-left text-white">
+                Status
+              </th>
+              <th className="text-left text-white">
+                Actions
+              </th>
             </tr>
           </thead>
 
@@ -126,12 +143,16 @@ export default async function MembersPage() {
                     className="rounded-full px-3 py-1 text-sm font-semibold"
                     style={{
                       backgroundColor: `${
-                        member.clubPosition?.badge_color ?? "#6B7280"
+                        member.clubPosition
+                          ?.badge_color ?? "#6B7280"
                       }20`,
-                      color: member.clubPosition?.badge_color ?? "#FFFFFF",
+                      color:
+                        member.clubPosition
+                          ?.badge_color ?? "#FFFFFF",
                     }}
                   >
-                    {member.clubPosition?.title ?? "-"}
+                    {member.clubPosition?.title ??
+                      "None"}
                   </span>
                 </td>
 
@@ -142,9 +163,11 @@ export default async function MembersPage() {
                 <td>
                   <span
                     className={`rounded-full px-3 py-1 text-sm font-semibold ${
-                      member.account_status === "Active"
+                      member.account_status ===
+                      "Active"
                         ? "bg-green-500/20 text-green-400"
-                        : member.account_status === "Muted"
+                        : member.account_status ===
+                          "Muted"
                         ? "bg-yellow-500/20 text-yellow-400"
                         : "bg-red-500/20 text-red-400"
                     }`}

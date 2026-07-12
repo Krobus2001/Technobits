@@ -15,6 +15,94 @@ export default async function QuestionPage({
 
   const supabase = await createClient();
 
+  const {
+  data: { user },
+} = await supabase.auth.getUser();
+
+let currentProfile = null;
+let canReply = true;
+
+if (user) {
+  const { data } = await supabase
+    .from("profiles")
+    .select(`
+      account_status,
+      moderation_reason,
+      muted_until,
+      banned_until
+    `)
+    .eq("id", user.id)
+    .single();
+
+  currentProfile = data;
+
+  if (data) {
+    const now = new Date();
+
+    // -------------------------
+    // ACTIVE MUTE
+    // -------------------------
+
+    if (
+      data.account_status === "Muted" &&
+      data.muted_until
+    ) {
+      if (new Date(data.muted_until) > now) {
+        canReply = false;
+      } else {
+        // Mute expired -> restore account
+        await supabase
+          .from("profiles")
+          .update({
+            account_status: "Active",
+            moderation_reason: null,
+            muted_until: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", user.id);
+
+        currentProfile = {
+          ...data,
+          account_status: "Active",
+          moderation_reason: null,
+          muted_until: null,
+        };
+      }
+    }
+
+    // -------------------------
+    // ACTIVE BAN
+    // -------------------------
+
+    if (
+      data.account_status === "Banned" &&
+      data.banned_until
+    ) {
+      if (new Date(data.banned_until) > now) {
+        canReply = false;
+      } else {
+        // Ban expired -> restore account
+        await supabase
+          .from("profiles")
+          .update({
+            account_status: "Active",
+            moderation_reason: null,
+            banned_until: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", user.id);
+
+        currentProfile = {
+          ...data,
+          account_status: "Active",
+          moderation_reason: null,
+          banned_until: null,
+        };
+      }
+    }
+  }
+}
+
         const { data: question } = await supabase
       .from("questions")
       .select(`
@@ -41,23 +129,19 @@ export default async function QuestionPage({
   .from("club_positions")
   .select("*");
 
-  function getPosition(positionId: number | null) {
-  if (!positionId) {
-    return {
-      title: "Member",
-      badge_color: "#475569",
-    };
-  }
-
-  return (
-    positions?.find(
-      (p) => p.id === positionId
-    ) ?? {
-      title: "Member",
-      badge_color: "#475569",
+  function getPosition(
+    positionId: number | null
+  ) {
+    if (!positionId) {
+      return null;
     }
-  );
-}
+
+    return (
+      positions?.find(
+        (p) => p.id === positionId
+      ) ?? null
+    );
+  }
 
   if (!question) {
     notFound();
@@ -158,14 +242,16 @@ export default async function QuestionPage({
                   {question.profiles?.full_name ?? "Unknown User"}
                 </h3>
 
-                <span
-                  className="text-sm font-bold uppercase tracking-wide"
-                  style={{
-                    color: position.badge_color,
-                  }}
-                >
-                  · {position.title}
-                </span>
+               {position && (
+                  <span
+                    className="text-sm font-bold uppercase tracking-wide"
+                    style={{
+                      color: position.badge_color,
+                    }}
+                  >
+                    · {position.title}
+                  </span>
+                )}
 
               </div>
 
@@ -239,6 +325,7 @@ export default async function QuestionPage({
       {!question.locked && (
         <ReplyForm
           questionId={question.id}
+          profile={currentProfile}
         />
       )}
 
@@ -258,6 +345,7 @@ export default async function QuestionPage({
         <ReplyList
           positions={positions ?? []}
           questionId={question.id}
+          canReply={canReply}
         />
 
       </div>

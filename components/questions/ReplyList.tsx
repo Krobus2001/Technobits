@@ -5,14 +5,17 @@ import { Position } from "./types";
 import { useReplies } from "./RepliesProvider";
 
 type Props = {
-  positions: Position[];
   questionId: string;
+  positions: Position[];
+  canReply: boolean;
 };
 
 export default function ReplyList({
   positions,
   questionId,
+  canReply,
 }: Props) {
+
   const { replies } = useReplies();
 
 console.log("ReplyList render:", replies.length);
@@ -48,6 +51,7 @@ console.log("ReplyList render:", replies.length);
           replies={replies}
           positions={positions}
           questionId={questionId}
+          canReply={canReply}
         />
       ))}
     </div>

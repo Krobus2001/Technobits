@@ -54,11 +54,13 @@ export default async function EventPage({
 
       {/* Poster */}
 
+      <div className="mb-10 flex items-center justify-center rounded-3xl bg-[#051120] p-6">
       <img
         src={event.poster_url}
         alt={event.title}
-        className="mb-10 h-[500px] w-full rounded-3xl object-cover"
+        className="max-h-[900px] w-auto max-w-full rounded-2xl object-contain"
       />
+    </div>
 
       {/* Event Type */}
 

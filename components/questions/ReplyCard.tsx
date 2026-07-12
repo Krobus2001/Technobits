@@ -10,6 +10,7 @@ type Props = {
   replies: Reply[];
   positions: Position[];
   questionId: string;
+  canReply: boolean;
 };
 
 export default function ReplyCard({
@@ -17,16 +18,16 @@ export default function ReplyCard({
   replies,
   positions,
   questionId,
+  canReply,
 }: Props) {
+
   const { toggleHelpful } = useReplies();
 
-  const position =
-    positions.find(
-      (p) => p.id === reply.profiles?.club_position_id
-    ) ?? {
-      title: "Member",
-      badge_color: "#64748b",
-    };
+  const position = positions.find(
+    (p) =>
+      p.id ===
+      reply.profiles?.club_position_id
+  );
 
   const children = replies.filter(
     (r) => r.parent_reply_id === reply.id
@@ -51,14 +52,16 @@ export default function ReplyCard({
             {reply.profiles?.full_name ?? "Unknown User"}
           </h4>
 
-          <span
-            className="text-xs font-bold uppercase"
-            style={{
-              color: position.badge_color,
-            }}
-          >
-            · {position.title}
-          </span>
+          {position && (
+            <span
+              className="text-xs font-bold uppercase"
+              style={{
+                color: position.badge_color,
+              }}
+            >
+              · {position.title}
+            </span>
+          )}
 
         </div>
 
@@ -90,18 +93,20 @@ export default function ReplyCard({
       <NestedReplyForm
         questionId={questionId}
         parentReplyId={reply.id}
+        canReply={canReply}
       />
 
       <ReplyGroup count={children.length}>
 
         {children.map((child) => (
           <ReplyCard
-            key={child.id}
-            reply={child}
-            replies={replies}
-            positions={positions}
-            questionId={questionId}
-          />
+          key={child.id}
+          reply={child}
+          replies={replies}
+          positions={positions}
+          questionId={questionId}
+          canReply={canReply}
+        />
         ))}
 
       </ReplyGroup>

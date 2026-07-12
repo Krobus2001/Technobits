@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase-server";
 import { updateMember } from "./actions";
 
@@ -10,6 +10,26 @@ export default async function EditMemberPage({
   const { id } = await params;
 
   const supabase = await createClient();
+
+  // Check logged in user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Only Super Admin can edit members
+  const { data: currentUser } = await supabase
+    .from("profiles")
+    .select("website_role_id")
+    .eq("id", user.id)
+    .single();
+
+  if (!currentUser || currentUser.website_role_id !== 1) {
+    redirect("/admin");
+  }
 
   // Get Member
   const { data: member } = await supabase
@@ -96,9 +116,13 @@ export default async function EditMemberPage({
 
             <select
               name="club_position_id"
-              defaultValue={member.club_position_id}
+              defaultValue={member.club_position_id ?? ""}
               className="w-full rounded-lg bg-[#07182F] p-3 text-white"
             >
+              <option value="">
+                None
+              </option>
+
               {clubPositions?.map((position) => (
                 <option
                   key={position.id}
@@ -128,19 +152,63 @@ export default async function EditMemberPage({
             </select>
           </div>
 
-          {/* Status Reason */}
+          {/* Moderation Reason */}
 
           <div>
             <label className="mb-2 block text-white">
-              Status Reason
+              Moderation Reason
             </label>
 
             <textarea
-              name="status_reason"
-              defaultValue={member.status_reason ?? ""}
+              name="moderation_reason"
+              defaultValue={member.moderation_reason ?? ""}
               placeholder="Reason for mute or ban..."
               className="h-32 w-full rounded-lg bg-[#07182F] p-3 text-white"
             />
+          </div>
+
+          {/* Expiration */}
+
+          <div className="grid gap-6 md:grid-cols-2">
+
+            <div>
+              <label className="mb-2 block text-white">
+                Mute Until
+              </label>
+
+              <input
+                type="datetime-local"
+                name="muted_until"
+                defaultValue={
+                  member.muted_until
+                    ? new Date(member.muted_until)
+                        .toISOString()
+                        .slice(0, 16)
+                    : ""
+                }
+                className="w-full rounded-lg bg-[#07182F] p-3 text-white"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-white">
+                Ban Until
+              </label>
+
+              <input
+                type="datetime-local"
+                name="banned_until"
+                defaultValue={
+                  member.banned_until
+                    ? new Date(member.banned_until)
+                        .toISOString()
+                        .slice(0, 16)
+                    : ""
+                }
+                className="w-full rounded-lg bg-[#07182F] p-3 text-white"
+              />
+            </div>
+
           </div>
 
           <button
