@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Laptop,
   HardDrive,
@@ -22,27 +23,32 @@ const services = [
   },
   {
     title: "Formatting",
-    description: "Clean formatting while preserving important files.",
+    description:
+      "Clean formatting while preserving important files.",
     icon: HardDrive,
   },
   {
     title: "Laptop Cleaning",
-    description: "Internal cleaning and maintenance.",
+    description:
+      "Internal cleaning and maintenance.",
     icon: BrushCleaning,
   },
   {
     title: "Software Installation",
-    description: "Install essential software safely.",
+    description:
+      "Install essential software safely.",
     icon: Download,
   },
   {
     title: "Printer Setup",
-    description: "Printer installation and troubleshooting.",
+    description:
+      "Printer installation and troubleshooting.",
     icon: Printer,
   },
   {
     title: "PC Optimization",
-    description: "Improve your computer's performance.",
+    description:
+      "Improve your computer's performance.",
     icon: Gauge,
   },
 ];
@@ -51,6 +57,7 @@ export default function Services() {
   return (
     <section className="bg-[#081A31] py-24">
       <Container>
+
         <SectionTitle
           badge="SERVICES"
           title="What We Offer"
@@ -58,6 +65,7 @@ export default function Services() {
         />
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
           {services.map((service, index) => {
             const Icon = service.icon;
 
@@ -66,24 +74,38 @@ export default function Services() {
                 key={service.title}
                 delay={index * 0.08}
               >
-                <GlassCard>
-                  <Icon
-                    className="mb-5 text-cyan-400"
-                    size={42}
-                  />
+                <Link href="/services">
 
-                  <h3 className="mb-3 text-2xl font-bold text-white">
-                    {service.title}
-                  </h3>
+                  <div className="group cursor-pointer transition-all duration-300 hover:-translate-y-2">
 
-                  <p className="text-slate-300">
-                    {service.description}
-                  </p>
-                </GlassCard>
+                    <GlassCard>
+
+                      <div className="transition-transform duration-300 group-hover:scale-110">
+                        <Icon
+                          className="mb-5 text-cyan-400"
+                          size={42}
+                        />
+                      </div>
+
+                      <h3 className="mb-3 text-2xl font-bold text-white transition-colors duration-300 group-hover:text-cyan-400">
+                        {service.title}
+                      </h3>
+
+                      <p className="text-slate-300">
+                        {service.description}
+                      </p>
+
+                    </GlassCard>
+
+                  </div>
+
+                </Link>
               </ScrollReveal>
             );
           })}
+
         </div>
+        
       </Container>
     </section>
   );

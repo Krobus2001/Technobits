@@ -1,5 +1,3 @@
-"use client";
-
 import ScrollReveal from "../effects/ScrollReveal";
 import {
   Users,
@@ -11,31 +9,71 @@ import {
 import Container from "../ui/Container";
 import SectionTitle from "../ui/SectionTitle";
 import GlassCard from "../ui/GlassCard";
+import { createClient } from "@/lib/supabase-server";
 
-const stats = [
+export default async function Stats() {
+  const supabase = await createClient();
+
+  const [
+  { count: members },
+  { count: discussions },
+  { count: tutorials },
+  { count: events },
+] = await Promise.all([
+  supabase
+    .from("profiles")
+    .select("*", {
+      count: "exact",
+      head: true,
+    }),
+
+  supabase
+    .from("questions")
+    .select("*", {
+      count: "exact",
+      head: true,
+    }),
+
+  supabase
+    .from("tutorials")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("status", "Published"),
+
+  supabase
+    .from("events")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("status", "Published"),
+]);
+
+  const stats = [
   {
     title: "Members",
-    value: "0+",
+    value: members ?? 0,
     icon: Users,
   },
   {
-    title: "Projects",
-    value: "0+",
+    title: "Discussions",
+    value: discussions ?? 0,
     icon: FolderKanban,
   },
   {
     title: "Tutorials",
-    value: "0+",
+    value: tutorials ?? 0,
     icon: BookOpen,
   },
   {
     title: "Events",
-    value: "0+",
+    value: events ?? 0,
     icon: CalendarDays,
   },
 ];
 
-export default function Stats() {
   return (
     <section className="bg-[#081A31] py-24">
       <Container>
@@ -68,7 +106,7 @@ export default function Stats() {
                     </div>
 
                     <h2 className="text-5xl font-black text-white">
-                      {stat.value}
+                      {stat.value}+
                     </h2>
 
                     <p className="mt-3 text-slate-400">

@@ -70,13 +70,7 @@ export default function Hero() {
             transition={{ delay: 0.6 }}
             className="mt-10 flex flex-wrap gap-4"
           >
-            <Button>
-              Join Community
-            </Button>
-
-            <Button variant="secondary">
-              Learn More
-            </Button>
+               
           </motion.div>
 
         </motion.div>

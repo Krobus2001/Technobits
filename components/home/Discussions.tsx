@@ -1,8 +1,22 @@
 "use client";
 
+import Link from "next/link";
+
 import Container from "../ui/Container";
 import GlassCard from "../ui/GlassCard";
 import SectionTitle from "../ui/SectionTitle";
+
+const discussions = [
+  {
+    title: "💡 Website Improvement Suggestions",
+  },
+  {
+    title: "🎮 What activity would you like TECHNOBITS to organize next?",
+  },
+  {
+    title: "❓ Ask TECHNOBITS",
+  },
+];
 
 export default function Discussions() {
   return (
@@ -17,23 +31,24 @@ export default function Discussions() {
 
         <div className="space-y-5">
 
-          <GlassCard>
-            <h3 className="text-xl text-white font-bold">
-              How do I start learning React?
-            </h3>
-          </GlassCard>
+          {discussions.map((discussion) => (
+            <Link
+              key={discussion.title}
+              href="/ask"
+            >
+              <div className="group cursor-pointer transition-all duration-300 hover:-translate-y-2">
 
-          <GlassCard>
-            <h3 className="text-xl text-white font-bold">
-              Best free IDE for programming?
-            </h3>
-          </GlassCard>
+                <GlassCard>
 
-          <GlassCard>
-            <h3 className="text-xl text-white font-bold">
-              Windows vs Linux for students
-            </h3>
-          </GlassCard>
+                  <h3 className="text-xl font-bold text-white transition-colors duration-300 group-hover:text-cyan-400">
+                    {discussion.title}
+                  </h3>
+
+                </GlassCard>
+
+              </div>
+            </Link>
+          ))}
 
         </div>
 

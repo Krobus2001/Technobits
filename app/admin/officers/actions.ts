@@ -104,3 +104,27 @@ export async function deleteOfficer(
 
   revalidatePath("/admin/officers");
 }
+
+export async function updateAcademicYear(
+  formData: FormData
+) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("website_settings")
+    .update({
+      academic_year: formData.get(
+        "academic_year"
+      ),
+    })
+    .eq("id", 1);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin/officers");
+  revalidatePath("/officers");
+
+  redirect("/admin/officers");
+}

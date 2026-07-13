@@ -1,10 +1,22 @@
-"use client";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase-server";
 
 import Container from "../ui/Container";
 import GlassCard from "../ui/GlassCard";
 import SectionTitle from "../ui/SectionTitle";
 
-export default function Events() {
+export default async function Events() {
+  const supabase = await createClient();
+
+  const { data: events } = await supabase
+    .from("events")
+    .select("*")
+    .eq("status", "Published")
+    .order("created_at", {
+      ascending: false,
+    })
+    .limit(3);
+
   return (
     <section className="bg-[#07182F] py-24">
       <Container>
@@ -12,40 +24,40 @@ export default function Events() {
         <SectionTitle
           badge="EVENTS"
           title="Upcoming Activities"
-          subtitle="Workshops, seminars, competitions and club activities."
+          subtitle="Stay updated with the latest TECHNOBITS activities and announcements."
         />
 
         <div className="grid gap-6 lg:grid-cols-3">
 
-          <GlassCard>
-            <h3 className="text-xl font-bold text-white">
-              Programming Workshop
-            </h3>
+          {events?.map((event) => (
+            <Link
+              key={event.id}
+              href={`/events/${event.slug}`}
+            >
+              <div className="group cursor-pointer transition-all duration-300 hover:-translate-y-2">
 
-            <p className="mt-3 text-slate-300">
-              Learn web development with hands-on projects.
-            </p>
-          </GlassCard>
+                <GlassCard>
 
-          <GlassCard>
-            <h3 className="text-xl font-bold text-white">
-              PC Cleaning Day
-            </h3>
+                  <h3 className="text-xl font-bold text-white transition-colors duration-300 group-hover:text-cyan-400">
+                    {event.title}
+                  </h3>
 
-            <p className="mt-3 text-slate-300">
-              Free maintenance for selected students.
-            </p>
-          </GlassCard>
+                  <p className="mt-3 line-clamp-3 text-slate-300">
+                    {event.description}
+                  </p>
 
-          <GlassCard>
-            <h3 className="text-xl font-bold text-white">
-              Tech Quiz Bowl
-            </h3>
+                  <p className="mt-6 text-sm font-semibold text-cyan-400">
+                    {event.start_date &&
+                      new Date(
+                        event.start_date
+                      ).toLocaleDateString()}
+                  </p>
 
-            <p className="mt-3 text-slate-300">
-              Test your technology knowledge and win prizes.
-            </p>
-          </GlassCard>
+                </GlassCard>
+
+              </div>
+            </Link>
+          ))}
 
         </div>
 

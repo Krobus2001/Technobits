@@ -10,7 +10,6 @@ import Services from "@/components/home/Services";
 import Events from "@/components/home/Events";
 import Tutorials from "@/components/home/Tutorials";
 import Discussions from "@/components/home/Discussions";
-import Newsletter from "@/components/home/Newsletter";
 import FooterCTA from "@/components/home/FooterCTA";
 import PageLoader from "@/components/effects/PageLoader";
 import BackToTop from "@/components/effects/BackToTop";
@@ -34,7 +33,6 @@ export default function Home() {
       <Events />
       <Tutorials />
       <Discussions />
-      <Newsletter />
       <FooterCTA />
       <FloatingDock />
 
